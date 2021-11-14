@@ -1,7 +1,7 @@
 
 /* Global Variables */
 const API_Keys='&appid=0463aac12728657ef94575df02be8116&units=metric';
-const API_Url='http://api.openweathermap.org/data/2.5/forecast?zip=';
+const API_Url='https://api.openweathermap.org/data/2.5/forecast?zip=';
 
 // adding Eventlistner 
 document.querySelector('#generate').addEventListener('click',fetching);
