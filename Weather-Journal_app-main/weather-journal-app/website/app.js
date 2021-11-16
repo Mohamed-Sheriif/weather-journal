@@ -16,7 +16,7 @@ function fetching (){
  getApiData (API_Url+zip_Code+API_Keys). 
  then( item=>{
      console.log(item);
-    postData('/postData',{item:d ,content:interests.value , temp:item.list[0].main.temp});
+    postData('/postData',{date: newDate ,content:interests , temp:item.list[0].main.temp});
     updateDataUI('/allData');
 
  })
