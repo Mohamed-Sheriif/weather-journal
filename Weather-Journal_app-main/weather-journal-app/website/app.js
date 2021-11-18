@@ -1,75 +1,66 @@
 
 /* Global Variables */
-const API_Keys='&appid=0463aac12728657ef94575df02be8116&units=metric';
-const API_Url='https://api.openweathermap.org/data/2.5/forecast?zip=';
+const API_Url='https://api.openweathermap.org/data/2.5/weather?zip=';
+const API_Keys='&appid=10aacb01930767b42f7ecf259d0cb7c0&units=metric';
 
-// adding Eventlistner 
-document.querySelector('#generate').addEventListener('click',fetching);
+  // adding event listener on the button
+  document.getElementById('generate').addEventListener('click' , fetching);
+//resbonsible in displaying the information on the browser
+const dataUpdating = async () => {
+    const req = await fetch('/getting');
+    try{
+        const allDatta = await req.json();
+        document.querySelector('#date').innerHTML = `Date: ${allDatta.date}`;
+        document.querySelector('#temp').innerHTML = `temp: ${allDatta.temp}`;
+        document.querySelector('#content').innerHTML = `feeling : ${allDatta.content}`;
+    }catch(error){
+        console.log("error" , error);
+    }
+}
 
-
-
-function fetching (){
- const zip_Code = document.querySelector('#zip').value;
- console.log(zip_Code);
- const interests =document.querySelector('#feelings').value;
- console.log(API_Url+zip_Code+API_Keys);
- getApiData (API_Url+zip_Code+API_Keys). 
- then( item=>{
-     console.log(item);
-    postData('/postData',{date: newDate ,content:interests , temp:item.list[0].main.temp});
-    updateDataUI('/allData');
-
- })
-
+const dataPostiong = async (url = '' , data = {})=>{
+    console.log(data);
+    const response = await fetch(url, {
+        method: 'POST', 
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+       // Body data type must match "Content-Type" header        
+        body: JSON.stringify(data)
+      });
+  
+        try {
+          const newData = await response.json();
+          console.log(newData);
+          return newData;
+        }catch(error) {
+        console.log("error", error);
+        }
 }
 
 
-async function postData(url = '', data = {}) {
-    // Default options are marked with *
-    console.log(data);
-    const response = await fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    try {
-        const data=await response.json();
-        return data ;
+//getting data from API
+const getDataFromApi = async (url , zipCode , apiKey)=>{
+    const res = await fetch(url+zipCode+apiKey)
+    try{
+        const data = await res.json();
+        return data;
+    }catch(error){
+        console.log('error' , error);
     }
-    catch(error)
-    {console.log('error',error)}// parses JSON response into native JavaScript objects
-  }
-  
+}
 
-  const updateDataUI =async (url='')=>{
-   console.log(url);
-    const response=await fetch(url) ;
-    try {
-       
-        const allData=await response.json();
+function fetching(ev){
+    const getZip = document.getElementById('zip').value;
+    const interests = document.getElementById('feelings').value;
+    console.log(getZip);
+    getDataFromApi(API_Url , getZip , API_Keys).then((data)=>{
+        console.log(data);
+        dataPostiong('/posting' , {date:newDate , temp:data.main.temp , content:interests})
+    }).then(() => dataUpdating())
 
-        document.getElementById('date').innerHTML=`Date: ${allData.date}`;
-        document.getElementById('temp').innerHTML=`Temp: ${allData.temp} C`;
-        document.getElementById('content').innerHTML=`content: ${allData.content}`
+}
 
-    }
-    catch(error)
-    {console.log('error',error)}
-};
-const getApiData =async (url='')=>{
-   
-    const response=await fetch(url) ;
-    try {
-        const data=await response.json();
-        return data ;
-    }
-    catch(error)
-    {console.log('error',error)
-}};
-// Create a new date instance dynamically with JS
 let d = new Date();
 let newDate = d.getMonth()+'.'+ d.getDate()+'.'+ d.getFullYear();
